@@ -1,0 +1,47 @@
+{
+  "title": "Linux Users and Groups Management",
+  "description": "Learn how to create, configure, and manage Linux users and groups. This scenario covers user and group administration, password policies, and access control.",
+  "difficulty": "beginner",
+  "time": "45 minutes",
+  "details": {
+    "steps": [
+      {
+        "title": "Understanding Users and Groups",
+        "text": "step1.md"
+      },
+      {
+        "title": "System Configuration Files",
+        "text": "step2.md"
+      },
+      {
+        "title": "Creating Users with useradd",
+        "text": "step3.md"
+      },
+      {
+        "title": "Managing User Passwords",
+        "text": "step4.md"
+      },
+      {
+        "title": "Managing Groups",
+        "text": "step5.md"
+      },
+      {
+        "title": "Exercise: Create Project Users",
+        "text": "step6.md"
+      },
+      {
+        "title": "sudo and Administrative Access",
+        "text": "step7.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "environment": {
+    "platforms": ["ubuntu"]
+  }
+}
