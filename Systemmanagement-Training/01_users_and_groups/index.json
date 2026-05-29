@@ -1,6 +1,6 @@
 {
-  "title": "Linux Users and Groups Management",
-  "description": "Learn how to create, configure, and manage Linux users and groups. This scenario covers user and group administration, password policies, and access control.",
+  "title": "Users and Groups",
+  "description": "Learn how to create, configure, and manage Linux users and groups.",
   "difficulty": "beginner",
   "time": "45 minutes",
   "details": {
@@ -41,7 +41,7 @@
       "text": "finish.md"
     }
   },
-  "environment": {
-    "platforms": ["ubuntu"]
+  "backend": {
+    "imageid": "ubuntu"
   }
 }
