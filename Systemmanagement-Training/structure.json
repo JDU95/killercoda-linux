@@ -5,11 +5,43 @@
   "items": [
     {
       "path": "01_users_and_groups",
-      "title": "Stage-00 | Orientation"
+      "title": "Stage-00 | Users and Groups"
     },
     {
-      "path": "Lab-08",
-      "title": "Stage-07 | Creating things"
+      "path": "02_files_directories_and_processes",
+      "title": "Stage-01 | Files, Directories and Processes"
+    },
+    {
+      "path": "03_filesystem_admin",
+      "title": "Stage-02 | Filesystem Admin"
+    },
+    {
+      "path": "04_lvm",
+      "title": "Stage-03 | LVM"
+    },
+    {
+      "path": "05_networking",
+      "title": "Stage-04 | Networking"
+    },
+    {
+      "path": "06_ssh_security",
+      "title": "Stage-05 | SSH Security"
+    },
+    {
+      "path": "07_systemd",
+      "title": "Stage-06 | Systemd"
+    },
+    {
+      "path": "08_cron-logging",
+      "title": "Stage-07 | Cron and Logging"
+    },
+    {
+      "path": "09_find_grep_tar",
+      "title": "Stage-08 | Find, Grep and Tar"
+    },
+    {
+      "path": "10_packagemanagement",
+      "title": "Stage-09 | Package Management"
     }
   ]
 }

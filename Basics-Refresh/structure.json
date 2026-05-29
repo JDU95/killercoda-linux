@@ -4,12 +4,36 @@
   "author": "JDU95",
   "items": [
     {
-      "path": "01_Intro_and_Basic-Commands",
+      "path": "01_Intro_and_Basic-commands",
       "title": "Stage-00 | Orientation"
     },
     {
-      "path": "Lab-08",
-      "title": "Stage-07 | Creating things"
+      "path": "02_filesystem_structure",
+      "title": "Stage-01 | Filesystem Structure"
+    },
+    {
+      "path": "03_shell_features",
+      "title": "Stage-02 | Shell Features"
+    },
+    {
+      "path": "04_vi-editor",
+      "title": "Stage-03 | Vi Editor"
+    },
+    {
+      "path": "05_advanced_shell",
+      "title": "Stage-04 | Advanced Shell"
+    },
+    {
+      "path": "06_data-streams_and_pipes",
+      "title": "Stage-05 | Data Streams and Pipes"
+    },
+    {
+      "path": "07_find_and_grep",
+      "title": "Stage-06 | Find and Grep"
+    },
+    {
+      "path": "08_filesystem-security",
+      "title": "Stage-07 | Filesystem Security"
     }
   ]
 }
