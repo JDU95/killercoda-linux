@@ -1,0 +1,15 @@
+{
+  "title": "Linux FH - System Management - Admin",
+  "description": "Training for Linux using real Ubuntu terminals.",
+  "author": "JDU95",
+  "items": [
+    {
+      "path": "Lab-01",
+      "title": "Stage-00 | Orientation"
+    },
+    {
+      "path": "Lab-08",
+      "title": "Stage-07 | Creating things"
+    }
+  ]
+}

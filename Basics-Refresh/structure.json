@@ -1,0 +1,15 @@
+{
+  "title": "Linux FH - Refresh and Learn",
+  "description": "A step-by-step, zero-fear introduction to Linux using real Ubuntu terminals.",
+  "author": "JDU95",
+  "items": [
+    {
+      "path": "01_Intro_and_Basic-Commands",
+      "title": "Stage-00 | Orientation"
+    },
+    {
+      "path": "Lab-08",
+      "title": "Stage-07 | Creating things"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+# Willkommen im Linux-Kurs-Szenario 1
