@@ -26,6 +26,6 @@
     }
   },
   "backend": {
-    "imageid": "debian"
+    "imageid": "ubuntu"
   }
 }
