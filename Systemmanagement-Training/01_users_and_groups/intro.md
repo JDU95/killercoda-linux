@@ -1,8 +1,8 @@
-# Linux Users and Groups Management
+# Linux User und Gruppen Management
 
-Welcome to the **Linux System Administration** scenario on Users and Groups!
+Willkommen zum **Linux Users and Groups Management** Szenario!
 
-## Overview
+## Überblick
 
 In this scenario, you will learn how to manage users and groups on a Linux system. This is fundamental to Linux system administration and security. You'll cover:
 
@@ -26,7 +26,7 @@ By the end of this scenario, you will be able to:
 
 ## Prerequisites
 
-- Basic Linux command-line knowledge
+- Basic Linux command knowledge
 - Comfortable with file permissions and basic shell commands
 
 Let's get started! Click **Start** to begin.

@@ -1,47 +1,61 @@
 {
-  "title": "Users and Groups",
-  "description": "Learn how to create, configure, and manage Linux users and groups.",
-  "difficulty": "beginner",
-  "time": "45 minutes",
+  "title": "Stage-00 | Users und Gruppen",
+  "description": "Lerne wie man User und Gruppen in Linux erstellen, konfigurieren und verwalten kann.",
+  "difficulty": "Beginner",
+  "time": "60 minuten",
   "details": {
-    "steps": [
-      {
-        "title": "Understanding Users and Groups",
-        "text": "step1.md"
-      },
-      {
-        "title": "System Configuration Files",
-        "text": "step2.md"
-      },
-      {
-        "title": "Creating Users with useradd",
-        "text": "step3.md"
-      },
-      {
-        "title": "Managing User Passwords",
-        "text": "step4.md"
-      },
-      {
-        "title": "Managing Groups",
-        "text": "step5.md"
-      },
-      {
-        "title": "Exercise: Create Project Users",
-        "text": "step6.md"
-      },
-      {
-        "title": "sudo and Administrative Access",
-        "text": "step7.md"
-      }
-    ],
     "intro": {
       "text": "intro.md"
     },
+    "steps": [
+      {
+        "title": "Grundlagen zu Usern und Gruppen",
+        "text": "step1/step1.md",
+        "verify": "step1/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "System Konfigurationsdateien für User und Gruppen",
+        "text": "step2/step2.md",
+        "verify": "step2/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "User erstellen mit useradd",
+        "text": "step3/step3.md",
+        "verify": "step3/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "User Passwörter verwalten",
+        "text": "step4/step4.md",
+        "verify": "step4/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Gruppen verwalten",
+        "text": "step5/step5.md",
+        "verify": "step5/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Beispiel: Erstellen von Project Usern",
+        "text": "step6/step6.md",
+        "verify": "step6/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "sudo und Administrativer Access",
+        "text": "step7/step7.md",
+        "verify": "step7/verify.sh",
+        "foreground": "foreground/setup.sh"
+      }
+    ],
     "finish": {
       "text": "finish.md"
     }
   },
   "backend": {
-    "imageid": "ubuntu"
+    "imageid": "debian"
   }
 }

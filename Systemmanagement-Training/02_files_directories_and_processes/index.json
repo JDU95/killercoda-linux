@@ -1,0 +1,31 @@
+{
+  "title": "Stage-01 | Dateien, Verzeichnisse und Prozesse",
+  "description": "Lerne wie man Dateien, Verzeichnisse und Prozesse in Linux erstellen, konfigurieren und verwalten kann.",
+  "difficulty": "Beginner",
+  "time": "60 minuten",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "Grundlagen zu Dateien und Verzeichnissen",
+        "text": "step1/step1.md",
+        "verify": "step1/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Prozesse verwalten",
+        "text": "step2/step2.md",
+        "verify": "step2/verify.sh",
+        "foreground": "foreground/setup.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "debian"
+  }
+}

@@ -1,19 +1,19 @@
 {
   "title": "Linux FH - System Management - Admin",
-  "description": "Training for Linux using real Ubuntu terminals.",
+  "description": "Training für Linux mit einem virtuellen Debian terminal.",
   "author": "JDU95",
   "items": [
     {
       "path": "01_users_and_groups",
-      "title": "Stage-00 | Users and Groups"
+      "title": "Stage-00 | Users und Gruppen"
     },
     {
       "path": "02_files_directories_and_processes",
-      "title": "Stage-01 | Files, Directories and Processes"
+      "title": "Stage-01 | Dateien, Verzeichnisse und Prozesse"
     },
     {
       "path": "03_filesystem_admin",
-      "title": "Stage-02 | Filesystem Admin"
+      "title": "Stage-02 | Dateisystem Admin"
     },
     {
       "path": "04_lvm",
@@ -21,7 +21,7 @@
     },
     {
       "path": "05_networking",
-      "title": "Stage-04 | Networking"
+      "title": "Stage-04 | Netzwerkadministration"
     },
     {
       "path": "06_ssh_security",
@@ -33,15 +33,15 @@
     },
     {
       "path": "08_cron-logging",
-      "title": "Stage-07 | Cron and Logging"
+      "title": "Stage-07 | Cron und Logging"
     },
     {
       "path": "09_find_grep_tar",
-      "title": "Stage-08 | Find, Grep and Tar"
+      "title": "Stage-08 | Find, Grep und Tar"
     },
     {
       "path": "10_packagemanagement",
-      "title": "Stage-09 | Package Management"
+      "title": "Stage-09 | Paketmanagement"
     }
   ]
 }

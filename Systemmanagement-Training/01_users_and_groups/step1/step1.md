@@ -1,4 +1,4 @@
-# Step 1: Understanding Users and Groups
+# Step 1: Verstehen von Usern und Gruppen
 
 ## Core Concepts
 
