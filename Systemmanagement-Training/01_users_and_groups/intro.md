@@ -1,32 +1,33 @@
-# Linux User und Gruppen Management
+# Linux User und Gruppen Verwaltung
 
-Willkommen zum **Linux Users and Groups Management** Szenario!
+Willkommen zum **Linux Users and Groups Verwaltung** Szenario!
 
 ## Überblick
 
-In this scenario, you will learn how to manage users and groups on a Linux system. This is fundamental to Linux system administration and security. You'll cover:
+In diesem Szenario lernen und üben wir das verwalten von Usern und Gruppen auf einem Linux system. 
+Wir betrachten:
 
-- **Understanding Users and Groups**: Core concepts like UIDs, GIDs, primary and secondary groups
-- **Configuration Files**: `/etc/passwd`, `/etc/shadow`, `/etc/group`, `/etc/gshadow`
-- **User Management**: Creating, modifying, and deleting users with `useradd`, `usermod`, `userdel`
-- **Password Management**: Setting and managing passwords with `passwd` and `chage`
-- **Group Management**: Creating and managing groups with `groupadd`, `groupmod`, `groupdel`
-- **Administrative Access**: Using `sudo` for privilege escalation
+- **Verstehen von Usern and Gruppen**: Zentrale Konzepte wie UIDs, GIDs, primär und sekundär Gruppen
+- **System Konfigurationsdateien für User und Gruppen**: `/etc/passwd`, `/etc/shadow`, `/etc/group`, `/etc/gshadow`
+- **User Verwaltung**: Erstellen, ändern und löschen von Usern mit `useradd`, `usermod`, `userdel`
+- **Password Verwaltung**: Setzen und verwalten von Passwörtern mit `passwd` and `chage`
+- **Gruppen Verwaltung**: Erstellen and verwalten von Gruppen mit `groupadd`, `groupmod`, `groupdel`
+- **Administrativer Zugriff für User**: Verwendung von `sudo` für Privilegienerweiterung einzelner User
 
-## Learning Objectives
+## Lernziele
 
-By the end of this scenario, you will be able to:
+Am Ende dieses Szenarios wirst du in der Lage sein:
 
-✓ Create and configure new user accounts  
-✓ Manage user passwords and password policies  
-✓ Create and manage groups  
-✓ Configure users with proper group memberships  
-✓ Understand the system files that store user/group information  
-✓ Grant administrative privileges using `sudo`
+✓ Neue Benutzerkonten zu erstellen und zu konfigurieren  
+✓ Benutzerpasswörter und Passwort‑Richtlinien zu verwalten  
+✓ Gruppen zu erstellen und zu administrieren  
+✓ Benutzer korrekt Gruppen zuzuordnen  
+✓ Die Systemdateien zu verstehen, in denen Benutzer‑ und Gruppeninformationen gespeichert sind  
+✓ Administrationsrechte über sudo zu vergeben
 
-## Prerequisites
+## Vorraussetzungen
 
-- Basic Linux command knowledge
-- Comfortable with file permissions and basic shell commands
+- Grundkenntnisse in Linux‑Kommandos
+- Sicherer Umgang mit Dateiberechtigungen und grundlegenden Shell‑Befehlen
 
-Let's get started! Click **Start** to begin.
+Los geht’s! Klicke auf **Start**, um zu beginnen.

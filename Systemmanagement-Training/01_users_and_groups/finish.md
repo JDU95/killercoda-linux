@@ -1,6 +1,6 @@
-# Congratulations! 🎉
+# Gratuliere du hast es geschafft! 🎉
 
-You've successfully completed the **Linux Users and Groups Management** scenario!
+Du hast das Szenario **Linux User und Gruppen Verwaltung** erfolgreich beendet!
 
 ## What You've Learned
 

@@ -1,4 +1,4 @@
-# Step 2: System Configuration Files
+# Step 2: System Konfigurationsdateien für User und Gruppen
 
 ## The Four Key Files
 

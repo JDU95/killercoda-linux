@@ -45,7 +45,7 @@
         "foreground": "foreground/setup.sh"
       },
       {
-        "title": "sudo und Administrativer Access",
+        "title": "sudo und Administrativer Zugriff für User",
         "text": "step7/step7.md",
         "verify": "step7/verify.sh",
         "foreground": "foreground/setup.sh"
