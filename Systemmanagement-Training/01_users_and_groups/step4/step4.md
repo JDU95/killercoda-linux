@@ -1,49 +1,61 @@
-# Step 4: Managing User Passwords
+# Step 4: Passwörter und Password-Aging verwalten
 
-## Setting Passwords with passwd
+## Passwörter setzen mit passwd
 
-The **passwd** command is used to set or change passwords. 
-
-### Basic Usage
+Das Kommando **passwd** setzt oder ändert Passwörter.
 
 ```bash
-# Change your own password (interactive)
+# Eigenes Passwort interaktiv ändern
 passwd
 
-# Set password for another user (root only)
-sudo passwd username
+# Passwort eines anderen Users setzen (nur root)
+sudo passwd benutzername
 
 # Set password non-interactively (for scripts)
 echo "newpassword" | sudo passwd --stdin username
+
+# Account sperren (Lock)
+sudo passwd -l benutzername
+
+# Account entsperren (Unlock)
+sudo passwd -u benutzername
+
 ```
 
-## Password Aging with chage
+**Wie funktioniert Lock/Unlock?**  
+`passwd -l` stellt ein `!` an den Beginn des Passwort-Hashes in `/etc/shadow`.
+`passwd -u` entfernt das `!` wieder. Der Account existiert weiterhin, ein Login ist aber nicht möglich.
 
-The **chage** command manages password aging policies. This forces users to change passwords periodically and improves security.
 
-### Common Options
+## Password-Aging mit chage
 
+Das Kommando **chage** verwaltet Passwort-Ablaufrichtlinien und verbessert die Sicherheit durch erzwungene regelmäßige Passwortwechsel.
+
+### chage-Optionen
+
+| Option | Beschreibung |
+|--------|-------------|
+| `-l username` | Aktuelle Einstellungen anzeigen |
+| `-d 0 username` | Zwingt beim nächsten Login zum Passwort-Wechsel |
+| `-M n username` | Passwort muss spätestens nach n Tagen geändert werden |
+| `-W n username` | Warnung n Tage vor Ablauf des Passworts |
+| `-i n username` | Account wird n Tage nach Passwortablauf deaktiviert |
+| `-E JJJJ-MM-TT username` | Account läuft zum angegebenen Datum ab |
+
+### Einstellungen anzeigen
+
+```bash
+sudo chage -l klaas
 ```
--l username              List current settings
--d 0 username            Force password change at next login
--M days username         Password must be changed every N days
--W days username         Warn N days before expiration
--i days username         Account disabled N days after expiration
--E YYYY-MM-DD username   Set account expiration date
-```
 
-## Practical Examples
 
 ### Set Initial Password
-
 Let's set a password for alice:
-
 ```bash
 # Set password for alice (will prompt for input)
 sudo passwd alice
 # Enter: alice123 (for demo purposes)
 ```
-
 Verify in `/etc/shadow`:
 
 ```bash
@@ -51,64 +63,59 @@ Verify in `/etc/shadow`:
 sudo grep "^alice:" /etc/shadow
 ```
 
-### Force Password Change at First Login
 
-Set up bob to change password on first login:
+### Neuen Account testen
 
-```bash
-# Create bob if not already created
-sudo useradd -c "Bob Johnson" -g developers bob 2>/dev/null
-
-# Set initial password
-echo "temppass" | sudo passwd --stdin bob
-
-# Force password change on next login
-sudo chage -d 0 bob
-```
-
-Verify:
+Nach dem Erstellen eines Accounts empfiehlt sich:
+- Benutzernamen, Passwort und Home-Verzeichnis überprüfen
+- Init-Dateien prüfen (PATH, Aliase etc.)
+- Mit `su - username` vorübergehend in den Account wechseln
 
 ```bash
-# Check bob's aging settings
-sudo chage -l bob
+# In Account wechseln (als root ohne Passwort)
+su - klaas
 ```
 
-### Set Password Expiration Policy
+## Aufgabe (Übung 1 – Teil 2)
 
-Create a user with strict password policy:
+Schließe die Einrichtung des Benutzers `klaas` aus Step 3 ab:
+
+**Schritt 1: Passwort für klaas setzen**
 
 ```bash
-# Create user
-sudo useradd -c "Sarah Miller" -g developers sarah
-
-# Set password
-echo "password123" | sudo passwd --stdin sarah
-
-# Policy: Change password every 90 days, warn 7 days before expiration
-sudo chage -M 90 -W 7 sarah
-
-# Show the policy
-sudo chage -l sarah
+sudo passwd klaas
+# Gib das gewählte Passwort zweimal ein
 ```
 
-### Set Account Expiration
+**Schritt 3: Passwort-Richtlinien konfigurieren**
 
-Create a temporary project account that expires:
+`klaas` muss sein Passwort nach dem ersten Login wechseln, danach alle 180 Tage:
 
 ```bash
-# Create temporary user
-sudo useradd -c "Temp Contractor" -g developers temp_contractor
-
-# Set password
-echo "temp123" | sudo passwd --stdin temp_contractor
-
-# Account expires in 30 days
-EXPIRY=$(date -d "+30 days" +%Y-%m-%d)
-sudo chage -E "$EXPIRY" temp_contractor
-
-# Verify
-sudo chage -l temp_contractor
+# Sofortiger Passwortwechsel beim ersten Login erzwingen
+# Danach alle 180 Tage wechseln
+sudo chage -d 0 -M 180 klaas
 ```
+
+**Schritt 4: Einstellungen überprüfen**
+
+```bash
+sudo chage -l klaas
+```
+
+Erwartete Ausgabe (Auszug):
+```
+Last password change                    : password must be changed
+Maximum number of days between password change  : 180
+```
+
+**Schritt 5: Account testen**
+
+```bash
+# Überprüfe den shadow-Eintrag (Passwort-Hash muss gesetzt sein)
+sudo grep "^klaas:" /etc/shadow
+```
+
 
 ## Understanding /etc/shadow
 
@@ -125,48 +132,18 @@ sudo cat /etc/shadow | head -5
 sudo awk -F: '{if (NR <= 3) print "Username: "$1" | Last changed: "$3" | Max days: "$5}' /etc/shadow
 ```
 
-## Security Considerations
-
-⚠️ **Strong Passwords**: Users should have strong passwords (use `pwgen` or similar):
-
-```bash
-# Generate strong password suggestions
-echo "Password suggestions:"
-echo "$(openssl rand -base64 12)"
-echo "$(openssl rand -base64 12)"
-```
-
 ⚠️ **Password History**: Check password requirements:
-
 ```bash
 # View password requirements
 sudo cat /etc/login.defs | grep -E "^PASS"
 ```
 
-## Practice Exercises
+## Key Takeaways
 
-Complete these tasks:
+✓ `passwd username` setzt das Passwort für einen Benutzer (nur root)  
+✓ `chage -d 0` erzwingt einen Passwortwechsel beim nächsten Login  
+✓ `chage -M 180` setzt das maximale Passwort-Alter auf 180 Tage  
+✓ `passwd -l` sperrt, `passwd -u` entsperrt einen Account  
+✓ Sichere Passwörter mit `mkpasswd` generieren
 
-1. **Lock a user account**:
-   ```bash
-   sudo passwd -l alice
-   # User can't login, but account isn't deleted
-   
-   # Unlock:
-   sudo passwd -u alice
-   ```
-
-2. **Create expiring test account**:
-   ```bash
-   sudo useradd -c "Test User" testuser
-   echo "testpass123" | sudo passwd --stdin testuser
-   sudo chage -M 30 -W 7 -i 7 testuser
-   sudo chage -l testuser
-   ```
-
-3. **Check all users and their expiration**:
-   ```bash
-   sudo awk -F: '{if ($5 != 9999 && $5 != "" && $5 > 0) print $1" - Max days: "$5}' /etc/shadow
-   ```
-
-Ready to manage groups? Let's continue!
+Weiter zur Gruppenverwaltung! Klicke auf **Next**.

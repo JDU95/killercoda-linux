@@ -1,56 +1,74 @@
-# Step 3: Creating Users with useradd
+# Step 3: User erstellen mit useradd
 
-## The useradd Command
+## Das useradd-Kommando
 
-The **useradd** command is the standard way to create new user accounts. It automatically:
-- Adds an entry to `/etc/passwd`
-- Creates the user's home directory
-- Copies skeleton configuration files
-- Sets up proper permissions
+Das Kommando **useradd** ist der Standardweg zum Erstellen neuer Benutzerkonten.
+Bei Verwendung wird automatisch:
+- Ein Eintrag in `/etc/passwd` angelegt
+- Das Home-Verzeichnis erstellt (mit `-m`)
+- Die Skeleton-Konfigurationsdateien aus `/etc/skel` kopiert
+- Die korrekten Berechtigungen gesetzt
 
-### Basic Usage
-
-```bash
-# Create a user with default settings
-sudo useradd username
-
-# Or with a comment (full name)
-sudo useradd -c "Full Name" username
-```
-
-### Useful Options
-
-```
--c "comment"      Full name or description
--d /home/dir      Specify home directory (default: /home/username)
--g groupname      Primary group (default: new group with same name)
--G group1,group2  Secondary groups (comma-separated)
--s /bin/shell     Login shell (default: /bin/bash)
--u UID           Specific UID (default: next available)
--e YYYY-MM-DD    Account expiration date
--m               Create home directory (usually default)
-```
-
-## Example: Create Your First User
-
-Let's create a user named `alice`:
+### Grundlegende Verwendung
 
 ```bash
-# Create basic user named alice
-sudo useradd -c "Alice Smith" -s /bin/bash alice
+# User mit Standardeinstellungen erstellen
+sudo useradd benutzername
+
+# User mit vollständigem Namen
+sudo useradd -c "Vollständiger Name" benutzername
 ```
 
-Verify it was created:
+### Wichtige Optionen
+
+| Option | Beschreibung |
+|--------|-------------|
+| `-c "Kommentar"` | Vollständiger Name oder Beschreibung |
+| `-d /home/verz` | Home-Verzeichnis (Standard: `/home/username`) |
+| `-m` | Home-Verzeichnis anlegen |
+| `-g gruppenname` | Primäre Gruppe (Standard: neue Gruppe mit gleichem Namen) |
+| `-G gruppe1,gruppe2` | Sekundäre Gruppen (kommagetrennt) |
+| `-s /bin/shell` | Login-Shell (Standard: `/bin/bash`) |
+| `-u UID` | Bestimmte UID vergeben |
+| `-e JJJJ-MM-TT` | Ablaufdatum des Accounts |
+| `-D` | Standardeinstellungen anzeigen/ändern |
+
+### usermod – Account nachträglich ändern
 
 ```bash
-# Check /etc/passwd entry
+# Sekundäre Gruppe hinzufügen (-a = append, wichtig!)
+sudo usermod -a -G gruppenname benutzername
+
+# Login-Namen ändern
+sudo usermod -l neuer_name alter_name
+
+# Home-Verzeichnis verschieben (Daten bleiben erhalten)
+sudo usermod -m -d /home/neues_verz benutzername
+```
+
+### userdel – Account löschen
+
+```bash
+# Account entfernen (Daten bleiben erhalten)
+sudo userdel benutzername
+
+# Account und Home-Verzeichnis entfernen
+sudo userdel -r benutzername
+```
+
+## Beispiel: Neuen Account einrichten
+
+```bash
+
+# User mit primärer default Gruppe und Shell erstellen
+sudo useradd -c "Alice Smith"  -s /bin/bash -m alice
+
+# Prüfen
 grep "^alice:" /etc/passwd
-
-# Verify home directory exists
 ls -la /home/alice
 ```
 
-## Create User with Primary Group
+## Create User with specific Primary Group
 
 Let's create a user with a specific primary group:
 
@@ -63,7 +81,6 @@ sudo useradd -c "Bob Johnson" -g developers -s /bin/bash bob
 ```
 
 Verify:
-
 ```bash
 grep "^bob:" /etc/passwd
 grep "^developers:" /etc/group
@@ -72,7 +89,6 @@ grep "^developers:" /etc/group
 ## Create User with Secondary Groups
 
 Create a user belonging to multiple groups:
-
 ```bash
 # Create additional groups
 sudo groupadd admins
@@ -83,7 +99,6 @@ sudo useradd -c "Charlie Davis" -g developers -G admins,testing -s /bin/bash cha
 ```
 
 Verify:
-
 ```bash
 # Check /etc/passwd
 grep "^charlie:" /etc/passwd
@@ -91,6 +106,7 @@ grep "^charlie:" /etc/passwd
 # Check all groups
 groups charlie
 ```
+
 
 ## Viewing User Information
 
@@ -105,34 +121,61 @@ wc -l /etc/passwd
 cat /etc/passwd | grep "^[^:]*:[^:]*:[0-9]*:[0-9]*:[^:]*:/home/"
 ```
 
-## Important Notes
+## Aufgabe (Übung 1 – Teil 1)
 
-⚠️ **Password Required**: `useradd` doesn't set a password! You must use `passwd` (next step)
+Richte einen neuen Benutzeraccount mit folgenden Einstellungen ein:
+
+| Einstellung | Wert |
+|-------------|------|
+| Account-Name | `klaas` |
+| Primäre Gruppe | `duck` |
+| Vollständiger Name | `Klaas Klever` |
+| Home-Verzeichnis | `/home/klaas_klever` |
+| Shell | `/bin/bash` |
+
+**Schritt 1: Primäre Gruppe erstellen**
+
+```bash
+sudo groupadd duck
+```
+
+**Schritt 2: Benutzer anlegen**
+
+```bash
+sudo useradd -c "Klaas Klever" -g duck -d /home/klaas_klever -m -s /bin/bash klaas
+```
+
+**Schritt 3: Überprüfen**
+
+```bash
+# Eintrag in /etc/passwd prüfen
+grep "^klaas:" /etc/passwd
+
+# Primäre Gruppe prüfen
+grep "^duck:" /etc/group
+
+# Home-Verzeichnis prüfen
+ls -la /home/klaas_klever
+```
+
+
+> **Hinweis:** `useradd` doesn't set a password! You must use `passwd` (next step)
 
 ⚠️ **Default Shell**: Verify the shell exists in `/etc/shells`:
 ```bash
 cat /etc/shells
 ```
-
 ⚠️ **Home Directory**: Created from `/etc/skel` template:
 ```bash
 ls -la /etc/skel
 ```
 
-## Practice
+## Key Takeaways
 
-Try creating these users:
+✓ `useradd` legt Benutzer an, setzt aber **kein** Passwort  
+✓ `-g` setzt die primäre, `-G` setzt sekundäre Gruppen  
+✓ Ohne `-m` wird kein Home-Verzeichnis erstellt  
+✓ Mit `usermod` können Einstellungen nachträglich geändert werden  
+✓ Die Skeleton-Dateien aus `/etc/skel` werden beim Anlegen kopiert
 
-1. **User**: `david` with comment `"David Wilson"`, primary group `developers`
-2. **User**: `emma` with groups: primary `developers`, secondary `admins,testing`
-
-```bash
-# Create your practice users here:
-sudo useradd -c "David Wilson" -g developers -s /bin/bash david
-sudo useradd -c "Emma Brown" -g developers -G admins,testing -s /bin/bash emma
-
-# Verify both users exist
-grep -E "^(david|emma):" /etc/passwd
-```
-
-Ready to set passwords? Let's continue!
+Bereit, das Passwort zu setzen? Weiter zum nächsten Schritt!

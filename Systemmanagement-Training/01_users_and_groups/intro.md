@@ -14,6 +14,12 @@ Wir betrachten:
 - **Gruppen Verwaltung**: Erstellen and verwalten von Gruppen mit `groupadd`, `groupmod`, `groupdel`
 - **Administrativer Zugriff für User**: Verwendung von `sudo` für Privilegienerweiterung einzelner User
 
+## Zusatzinfos:
+- ACL: Access Control List sind eine Ergänzung zur normalen Rechteverwaltung von Linux (die in diesem Szenario bearbeitet wird).
+ACLs unterstützen komplexere Regeln oder die Kompatibilität zu Microsoft Windows.
+Wenn du mehr zu ACLs wissen möchtest: https://wiki.ubuntuusers.de/ACL/
+
+
 ## Lernziele
 
 Am Ende dieses Szenarios wirst du in der Lage sein:

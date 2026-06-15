@@ -1,5 +1,13 @@
 #!/bin/bash
 # Step 1 Verification: Understanding Users and Groups
-# Check if user examined the system files
+# Check if the user saved their id/groups output to the verification file
 
-grep -q "whoami\|id\|groups\|cat /etc/passwd\|cat /etc/group" ~/.bash_history && exit 0 || exit 1
+[ -f /tmp/step1_verification.txt ] || exit 1
+
+# File must not be empty
+[ -s /tmp/step1_verification.txt ] || exit 1
+
+# File should contain uid= or gid= output from 'id'
+grep -qE "uid=|gid=" /tmp/step1_verification.txt || exit 1
+
+exit 0

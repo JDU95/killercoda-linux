@@ -1,120 +1,173 @@
-# Step 2: System Konfigurationsdateien für User und Gruppen
+# Step 2: System- und Konfigurationsdateien für User und Gruppen
 
-## The Four Key Files
+## Die vier zentralen Dateien
 
-Linux stores user and group information in four important files. Let's examine each one:
+Linux verwaltet Benutzer- und Gruppeninformationen in vier Konfigurationsdateien:
 
-### 1. /etc/passwd - User Account Information
+| Datei | Inhalt |
+|-------|--------|
+| `/etc/passwd` | Benutzerdaten außer dem Passwort |
+| `/etc/shadow` | Passwort als Hash-Code sowie Aging-Daten |
+| `/etc/group` | Gruppendaten |
+| `/etc/gshadow` | Gruppenpasswörter als Hash-Code (unüblich!) |
 
-This file contains basic user information (except passwords). Each line has 7 fields separated by colons:
+---
+
+### 1. /etc/passwd – Benutzerdaten außer Passwort
+
+Diese Datei enthält grundlegende Benutzerinformationen außer dem Passwort. Jede Zeile stellt einen User/Account dar und besteht aus **7 Feldern**, die durch Doppelpunkte getrennt sind:
 
 ```
 username:x:UID:GID:comment:home-directory:login-shell
 ```
 
-**Example:**
+**Beispiel:**
 ```
 root:x:0:0:root:/root:/bin/bash
 daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
 john:x:1000:1000:John Doe:/home/john:/bin/bash
 ```
 
-**Field Breakdown:**
-1. **username** - Login name
-2. **x** - Password hash (now stored in /etc/shadow)
-3. **UID** - User ID (0 = root)
-4. **GID** - Primary group ID
-5. **comment** - Full name/description
-6. **home-directory** - User's home directory path
-7. **login-shell** - Shell program executed at login
+**Feldbeschreibung:**
+1. **username** – Login-Name
+2. **x** – Passwort-Hash (wird jetzt in `/etc/shadow` gespeichert)
+3. **UID** – User ID (0 = root)
+4. **GID** – Primary Group ID
+5. **comment** – Vollständiger Name/Beschreibung
+6. **home-directory** – Pfad zum Home-Verzeichnis
+7. **login-shell** – Shell beim Login
 
-**Permissions:** Readable by all, writable only by root
+**Berechtigungen:** Alle Benutzer dürfen `/etc/passwd` **lesen**, aber nur root darf die Datei **verändern**.
 
-### 2. /etc/shadow - Password and Aging Data
+---
 
-Contains encrypted passwords and password aging information. **Only root can read this file!**
+### 2. /etc/shadow – Passwort und Aging-Daten
 
-Each line has 9 fields:
+Enthält verschlüsselte Passwörter (Hash-Codes) und Passwort-Aging-Informationen.
+**Nur root kann diese Datei lesen und verändern!**
+
+Jede Zeile hat 9 Felder:
 ```
-username:password-hash:changed:minlife:maxlife:warn:inactive:expire:unused
+username:pwd-hash:changed:minlife:maxlife:warn:inactive:expires:unused
 ```
 
-**Aging Parameters:**
-- **changed** - Days since Jan 1, 1970 when password was last changed
-- **minlife** - Minimum days before password can be changed (0 = no limit)
-- **maxlife** - Maximum days until password must be changed (9999 = no limit)
-- **warn** - Days warning given before password expiration
-- **inactive** - Days after expiration before account is disabled
-- **expire** - Account expiration date (empty = no limit)
+**Aging-Daten (Erläuterung):**
+- **changed** – Datum der letzten Passwort-Änderung (Tage seit dem 01.01.1970)
+- **minlife** – Minimale Tage bevor das Passwort geändert werden darf (0 = kein Limit)
+- **maxlife** – Maximale Tage bis das Passwort geändert werden muss (9999 ≈ unbegrenzt)
+- **warn** – Tage vor Ablauf des Passworts, an denen gewarnt wird (leer = keine Warnung)
+- **inactive** – Tage nach Passwortablauf bis der Account deaktiviert wird (leer = kein Limit)
+- **expires** – Datum, an dem der Account auf jeden Fall deaktiviert wird (leer = kein Limit)
 
-### 3. /etc/group - Group Information
+---
 
-Contains group definitions. Each line has 4 fields:
+### 3. /etc/group – Gruppeninformationen
+
+Enthält Gruppendaten. Jede Zeile hat **4 Felder**:
 
 ```
 groupname:x:GID:additional-users
 ```
 
-**Example:**
+**Beispiel:**
 ```
 root:x:0:
 developers:x:1001:john,sarah,mike
 accounting:x:1002:alice,bob
 ```
 
-**Field Breakdown:**
-1. **groupname** - Group name
-2. **x** - Group password (rarely used)
-3. **GID** - Group ID
-4. **additional-users** - Secondary group members (comma-separated)
+Gruppen können auch implizit durch die Nennung der GID in `/etc/passwd` definiert werden (ohne eigenen Eintrag in `/etc/group`). Dies ist unüblich – die Gruppe hat dann keinen Namen.
 
-### 4. /etc/gshadow - Group Passwords (rarely used)
+**Feldbeschreibung:**
+1. **groupname** - Gruppenname
+2. **x** - Gruppenpasswort (selten verwendet)
+3. **GID** - Gruppen-ID
+4. **additional-users** - Sekundäre Gruppenmitglieder (kommagetrennt)
 
-Contains encrypted group passwords. Similar structure to /etc/shadow but for groups.
+---
 
-## Examine the Files
+### 4. /etc/gshadow – Gruppenpasswörter (unüblich)
 
-Let's look at these files on your system:
+Enthält verschlüsselte Gruppenpasswörter. Ähnliche Struktur wie `/etc/shadow`, aber für Gruppen. In der Praxis kaum verwendet.
 
-```bash
-# View /etc/passwd
-cat /etc/passwd | head -15
-```
+---
 
-```bash
-# View /etc/group
-cat /etc/group | head -15
-```
+## Zugriffsrechte auf die Konfigurationsdateien
+
+Es ist **sicherheitskritisch**, dass niemand außer root Schreibrechte auf diese Dateien hat!
 
 ```bash
-# Check file permissions (important for security!)
+# Berechtigungen der Konfigurationsdateien anzeigen
 ls -l /etc/passwd /etc/shadow /etc/group /etc/gshadow
 ```
 
-**Security Note:** Notice that only root can read `/etc/shadow`. This protects password hashes from unauthorized access!
+**Erwartete Ausgabe:**
+```
+-rw-r--r-- 1 root root   /etc/group
+-rw-r----- 1 root shadow /etc/gshadow
+-rw-r--r-- 1 root root   /etc/passwd
+-rw-r----- 1 root shadow /etc/shadow
+```
 
-## Examine Your User
+- `/etc/passwd` und `/etc/group`: lesbar für alle (`-rw-r--r--`)
+- `/etc/shadow` und `/etc/gshadow`: nur root und Gruppe `shadow` (`-rw-r-----`)
 
-Find your own user entry:
+## Musterdateien für Benutzerinitialisierung (/etc/skel)
+
+Das Verzeichnis `/etc/skel` enthält Musterkonfigurationsdateien. Beim Einrichten eines neuen Accounts werden sie automatisch in das Heimatverzeichnis kopiert:
 
 ```bash
-# Get current username
-MYUSER=$(whoami)
-echo "Looking for user: $MYUSER"
+ls -la /etc/skel/
+```
 
-# Find your line in /etc/passwd
-grep "^$MYUSER:" /etc/passwd
+Shell-abhängige Dateien z.B.:
+- **bash**: `.profile`, `.bash_logout`, `.bashrc`
+- **C Shell**: `.login`, `.logout`, `.cshrc`
 
-# Find your groups in /etc/group
-grep "$MYUSER" /etc/group
+## Dateien untersuchen
+
+Untersuche die Konfigurationsdateien auf deinem System:
+
+```bash
+# /etc/passwd anzeigen (erste 15 Zeilen)
+head -15 /etc/passwd
+```
+
+```bash
+# /etc/group anzeigen (erste 15 Zeilen)
+head -15 /etc/group
+```
+
+```bash
+# Eigenen Eintrag in /etc/passwd finden
+grep "^$(whoami):" /etc/passwd
+```
+
+```bash
+# Eigene Gruppen in /etc/group finden
+grep "$(whoami)" /etc/group
+```
+
+## Aufgabe
+
+Speichere die Dateiberechtigungen der Konfigurationsdateien zur Überprüfung:
+
+```bash
+ls -l /etc/passwd /etc/shadow /etc/group /etc/gshadow > /tmp/step2_verification.txt
+```
+
+Überprüfe das Ergebnis:
+
+```bash
+cat /tmp/step2_verification.txt
 ```
 
 ## Key Takeaways
 
-✓ `/etc/passwd` - User account info (readable by all)  
-✓ `/etc/shadow` - Encrypted passwords (root only!)  
-✓ `/etc/group` - Group definitions and members  
-✓ `/etc/gshadow` - Group passwords (rarely used)  
-✓ These files must be carefully protected for system security
+✓ `/etc/passwd` – Benutzer-Account-Infos (für alle lesbar)  
+✓ `/etc/shadow` – Verschlüsselte Passwörter (nur root!)  
+✓ `/etc/group` – Gruppendefinitionen und Mitglieder  
+✓ `/etc/gshadow` – Gruppenpasswörter (selten verwendet)  
+✓ Diese Dateien müssen sorgfältig geschützt werden – Schreibrechte nur für root!
 
-Ready to create your first user? Let's move on!
+Bereit, deinen ersten User zu erstellen? Weiter zum nächsten Schritt!

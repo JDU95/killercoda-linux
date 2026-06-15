@@ -1,75 +1,105 @@
 # Step 1: Verstehen von Usern und Gruppen
 
-## Core Concepts
+## Kernkonzepte
 
-### What is a User?
+### Was ist ein User?
 
-A **user** (or account) on Linux can run programs and own files. Each user has:
+Ein **Benutzer/User** (oder Account) unter Linux kann Programme ausführen und Dateien besitzen. Jeder Benutzer hat:
 
-- **Username**: A unique login name (e.g., `john`, `sarah`)
-- **UID (User ID)**: A unique numeric identifier (e.g., 1000, 1001)
-- **Primary Group**: One group assigned to the user
-- **Home Directory**: Default location when user logs in (e.g., `/home/john`)
-- **Login Shell**: Shell used when user logs in (e.g., `/bin/bash`)
+- **Username**: einen eindeutigen Namen (z.B. `john`, `sarah`)
+- **UID**: eine eindeutige User Identification Number (z.B. 1000, 1001)
+- **Primäre Gruppe**: Hauptgruppe die dem User zugeordnet ist. Ein User kann mehreren Gruppen angehören, muss aber immer genau eine primäre Gruppe haben (Standard: selber Name wie Username)
+- **Home-Verzeichnis**: Standardverzeichnis, in dem sich ein Benutzer nach dem Login befindet (z.B. `/home/john`)
+- **Login Shell**: Shell die verwendet wird, wenn sich ein User einloggt (z.B. `/bin/bash`)
 
-### What is a Group?
+### Was ist eine Gruppe?
 
-A **group** is a collection of users that share permissions on files and directories. Each group has:
+Eine **Gruppe** ist eine Sammlung von Benutzern, die gemeinsame Berechtigungen für Dateien und Verzeichnisse teilen. Jede Gruppe hat:
 
-- **Group Name**: Unique identifier (e.g., `developers`, `accounting`)
-- **GID (Group ID)**: Unique numeric identifier (e.g., 1000, 1001)
-- **Members**: Users belonging to the group
+- **Gruppenname**: Eindeutiger Bezeichner (z.B. `developers`, `accounting`)
+- **GID (Group ID)**: Eindeutige numerische Kennung (z.B. 1000, 1001)
+- **Mitglieder**: Benutzer/User, die der Gruppe angehören
 
-## User and Group Relationships
+## Primäre und Sekundäre Gruppen
 
-### Primary Group
-- Every user belongs to exactly ONE primary group
-- Determined when the user is created
-- Stored in `/etc/passwd` (field 4)
-- New files created by the user belong to this group by default
+Die Benutzer- und Gruppenzuordnung entscheidet, wer auf welche Verzeichnisse und Dateien zugreifen darf.
 
-### Secondary Groups
-- A user can belong to ZERO or more secondary groups
-- Provides access to shared group resources
-- Stored in `/etc/group` (last field)
-- Can be modified with `usermod -a -G`
+### Primäre Gruppe
+- Jeder Benutzer ist genau **einer** primären Gruppe zugeordnet (4. Spalte in `/etc/passwd`)
+- Wird beim Erstellen des Benutzers festgelegt
+- Neu erstellte Dateien gehören standardmäßig dieser Gruppe
+- Nach dem Login ist immer die primäre Gruppe aktiv
 
-## Why Groups Matter?
+### Sekundäre Gruppen
+- Ein User kann beliebig vielen sekundären Gruppen zugeordnet werden (letzte Spalte in `/etc/group`)
+- Ermöglicht gemeinsamen Zugriff auf Gruppenressourcen
+- Wird mit `usermod -a -G` hinzugefügt
+- Der Benutzer kann mit `newgrp` eine andere seiner Gruppen aktivieren
 
-Groups allow:
-- **Shared Access**: Multiple users can access the same files/directories
-- **Project Organization**: Group files by project team
-- **Permission Management**: Grant permissions to groups instead of individuals
+## Warum Gruppen wichtig sind
 
-## Check Current System Users and Groups
+Gruppen erlauben:
+- **Gemeinsamer Zugriff**: Mehrere Benutzer können auf dieselben Dateien/Verzeichnisse zugreifen
+- **Projektorganisation**: Dateien nach Projektteams gruppieren
+- **Rechtemanagement**: Berechtigungen an Gruppen statt an einzelne Benutzer vergeben
 
-Let's look at the system users and groups on this machine:
+### Praktischer Anwendungsfall
+
+Gruppen müssen nicht zwangsläufig die Unternehmensstruktur widerspiegeln.
+Gruppen werden bei Bedarf eingerichtet, wenn mehrere Benutzer Dateien gemeinsam nutzen/bearbeiten sollen (gemeinsames Projekt):
+
+1. Neue Gruppe für das Projekt einrichten
+2. Gemeinsames Verzeichnis einrichten
+3. Die betreffenden Benutzer der neuen Gruppe zuordnen
+
+## Systeminformationen anzeigen
+
+Führe die folgenden Befehle aus, um die User- und Gruppeninfos deines Systems zu erkunden:
 
 ```bash
-# View system users (first 10 lines)
-head /etc/passwd
-```
-
-```bash
-# View system groups
-head /etc/group
-```
-
-```bash
-# Show your current user
+# Aktuellen Benutzer anzeigen
 whoami
 ```
 
 ```bash
-# Show all groups for current user
+# Detaillierte UID/GID-Informationen anzeigen
+id
+```
+
+```bash
+# Alle Gruppen des aktuellen Benutzers auflisten
 groups
+```
+
+```bash
+# Ersten 10 Einträge der Passwortdatei anzeigen
+head /etc/passwd
+```
+
+```bash
+# Ersten 10 Gruppeneinträge anzeigen
+head /etc/group
+```
+
+## Aufgabe
+
+Führe den folgenden Befehl aus, um deine Benutzer- und Gruppeninformationen zu speichern:
+
+```bash
+id > /tmp/step1_verification.txt && groups >> /tmp/step1_verification.txt
+```
+
+Überprüfe das Ergebnis:
+
+```bash
+cat /tmp/step1_verification.txt
 ```
 
 ## Key Takeaways
 
-✓ Users have unique usernames and UIDs  
-✓ Each user belongs to at least one primary group  
-✓ Users can be members of multiple secondary groups  
-✓ Groups enable permission management and collaboration
+✓ Benutzer haben eindeutige Benutzernamen und UIDs  
+✓ Jeder Benutzer gehört mindestens einer primären Gruppe an  
+✓ Benutzer können Mitglieder mehrerer sekundärer Gruppen sein  
+✓ Gruppen ermöglichen Rechteverwaltung und gemeinsamen Zugriff auf Dateien
 
-Ready to explore the configuration files? Click **Next** to continue!
+Weiter zu den Konfigurationsdateien! Klicke auf **Next**.
