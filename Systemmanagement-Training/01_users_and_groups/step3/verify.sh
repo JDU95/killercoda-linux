@@ -20,7 +20,11 @@ klaas_home=$(getent passwd klaas | cut -d: -f6)
 # 5. Check that the home directory actually exists
 [ -d "/home/klaas_klever" ] || exit 1
 
-# 6. Check full name/comment contains 'Klaas' and 'Klever'
+# 6. Check shell is /bin/bash
+klaas_shell=$(getent passwd klaas | cut -d: -f7)
+[ "$klaas_shell" = "/bin/bash" ] || exit 1
+
+# 7. Check full name/comment contains 'Klaas' and 'Klever'
 klaas_comment=$(getent passwd klaas | cut -d: -f5)
 echo "$klaas_comment" | grep -qi "Klaas" || exit 1
 echo "$klaas_comment" | grep -qi "Klever" || exit 1
