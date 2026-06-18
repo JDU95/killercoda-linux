@@ -11,7 +11,7 @@ head /etc/passwd
 head /etc/group
 ```
 
-> Die Theorie unten erklärt, was du siehst.
+> Die Theorie unten erklärt, was du bei den Befehlen siehst.
 
 ---
 

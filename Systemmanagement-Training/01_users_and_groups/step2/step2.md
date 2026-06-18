@@ -21,7 +21,7 @@ grep "^root:" /etc/passwd
 ls -la /etc/skel/
 ```
 
-> Die Theorie unten erklärt, was du siehst.
+> Die Theorie unten erklärt, die Files die in der Aufgabe gefragt sind.
 
 ---
 

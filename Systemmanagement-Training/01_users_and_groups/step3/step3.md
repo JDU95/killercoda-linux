@@ -1,5 +1,35 @@
 # Step 3: User erstellen mit useradd
 
+## Aufgabe (Übung 1 – Teil 1)
+
+Richte einen neuen Benutzeraccount mit folgenden Einstellungen ein:
+
+| Einstellung | Wert |
+|-------------|------|
+| Account-Name | `klaas` |
+| Primäre Gruppe | `duck` |
+| Vollständiger Name | `Klaas Klever` |
+| Home-Verzeichnis | `/home/klaas_klever` |
+| Shell | `/bin/bash` |
+
+**Hinweise:**
+Schritt 1: Primäre Gruppe erstellen
+Schritt 2: Benutzer anlegen
+Schritt 3: Überprüfen in /etc/passwd, /etc/group and the home-dir
+
+> **Weiterer Hinweis:** `useradd` setzt kein passwort! Das wird im Nächsten Step erledigt
+
+⚠️ **Default Shell**: Verify the shell exists in `/etc/shells`:
+```bash
+cat /etc/shells
+```
+⚠️ **Home Directory**: Created from `/etc/skel` template:
+```bash
+ls -la /etc/skel
+```
+
+> Die Theorie unten erklärt, was du für die Aufgabe benötigst.
+
 ## Das useradd-Kommando
 
 Das Kommando **useradd** ist der Standardweg zum Erstellen neuer Benutzerkonten.
@@ -121,54 +151,6 @@ wc -l /etc/passwd
 cat /etc/passwd | grep "^[^:]*:[^:]*:[0-9]*:[0-9]*:[^:]*:/home/"
 ```
 
-## Aufgabe (Übung 1 – Teil 1)
-
-Richte einen neuen Benutzeraccount mit folgenden Einstellungen ein:
-
-| Einstellung | Wert |
-|-------------|------|
-| Account-Name | `klaas` |
-| Primäre Gruppe | `duck` |
-| Vollständiger Name | `Klaas Klever` |
-| Home-Verzeichnis | `/home/klaas_klever` |
-| Shell | `/bin/bash` |
-
-**Schritt 1: Primäre Gruppe erstellen**
-
-```bash
-sudo groupadd duck
-```
-
-**Schritt 2: Benutzer anlegen**
-
-```bash
-sudo useradd -c "Klaas Klever" -g duck -d /home/klaas_klever -m -s /bin/bash klaas
-```
-
-**Schritt 3: Überprüfen**
-
-```bash
-# Eintrag in /etc/passwd prüfen
-grep "^klaas:" /etc/passwd
-
-# Primäre Gruppe prüfen
-grep "^duck:" /etc/group
-
-# Home-Verzeichnis prüfen
-ls -la /home/klaas_klever
-```
-
-
-> **Hinweis:** `useradd` doesn't set a password! You must use `passwd` (next step)
-
-⚠️ **Default Shell**: Verify the shell exists in `/etc/shells`:
-```bash
-cat /etc/shells
-```
-⚠️ **Home Directory**: Created from `/etc/skel` template:
-```bash
-ls -la /etc/skel
-```
 
 ## Key Takeaways
 
