@@ -1,105 +1,86 @@
 # Step 1: Verstehen von Usern und Gruppen
 
-## Kernkonzepte
+## Aufgabe
 
-### Was ist ein User?
-
-Ein **Benutzer/User** (oder Account) unter Linux kann Programme ausführen und Dateien besitzen. Jeder Benutzer hat:
-
-- **Username**: einen eindeutigen Namen (z.B. `john`, `sarah`)
-- **UID**: eine eindeutige User Identification Number (z.B. 1000, 1001)
-- **Primäre Gruppe**: Hauptgruppe die dem User zugeordnet ist. Ein User kann mehreren Gruppen angehören, muss aber immer genau eine primäre Gruppe haben (Standard: selber Name wie Username)
-- **Home-Verzeichnis**: Standardverzeichnis, in dem sich ein Benutzer nach dem Login befindet (z.B. `/home/john`)
-- **Login Shell**: Shell die verwendet wird, wenn sich ein User einloggt (z.B. `/bin/bash`)
-
-### Was ist eine Gruppe?
-
-Eine **Gruppe** ist eine Sammlung von Benutzern, die gemeinsame Berechtigungen für Dateien und Verzeichnisse teilen. Jede Gruppe hat:
-
-- **Gruppenname**: Eindeutiger Bezeichner (z.B. `developers`, `accounting`)
-- **GID (Group ID)**: Eindeutige numerische Kennung (z.B. 1000, 1001)
-- **Mitglieder**: Benutzer/User, die der Gruppe angehören
-
-## Primäre und Sekundäre Gruppen
-
-Die Benutzer- und Gruppenzuordnung entscheidet, wer auf welche Verzeichnisse und Dateien zugreifen darf.
-
-### Primäre Gruppe
-- Jeder Benutzer ist genau **einer** primären Gruppe zugeordnet (4. Spalte in `/etc/passwd`)
-- Wird beim Erstellen des Benutzers festgelegt
-- Neu erstellte Dateien gehören standardmäßig dieser Gruppe
-- Nach dem Login ist immer die primäre Gruppe aktiv
-
-### Sekundäre Gruppen
-- Ein User kann beliebig vielen sekundären Gruppen zugeordnet werden (letzte Spalte in `/etc/group`)
-- Ermöglicht gemeinsamen Zugriff auf Gruppenressourcen
-- Wird mit `usermod -a -G` hinzugefügt
-- Der Benutzer kann mit `newgrp` eine andere seiner Gruppen aktivieren
-
-## Warum Gruppen wichtig sind
-
-Gruppen erlauben:
-- **Gemeinsamer Zugriff**: Mehrere Benutzer können auf dieselben Dateien/Verzeichnisse zugreifen
-- **Projektorganisation**: Dateien nach Projektteams gruppieren
-- **Rechtemanagement**: Berechtigungen an Gruppen statt an einzelne Benutzer vergeben
-
-### Praktischer Anwendungsfall
-
-Gruppen müssen nicht zwangsläufig die Unternehmensstruktur widerspiegeln.
-Gruppen werden bei Bedarf eingerichtet, wenn mehrere Benutzer Dateien gemeinsam nutzen/bearbeiten sollen (gemeinsames Projekt):
-
-1. Neue Gruppe für das Projekt einrichten
-2. Gemeinsames Verzeichnis einrichten
-3. Die betreffenden Benutzer der neuen Gruppe zuordnen
-
-## Systeminformationen anzeigen
-
-Führe die folgenden Befehle aus, um die User- und Gruppeninfos deines Systems zu erkunden:
+Erkunde dein System – du kannst unten stehende Befehle ausführen und dir die Ausgaben ansehen.
+Du musst auch die beiden Befehle eingeben zum Anzeigen von User-Infos und zum anzeigen der aktuellen Gruppen diese sind hier noch nicht sofort angezeigt(falls du sie noch nicht weißt findest du sie in der Theorie unten erklärt):
 
 ```bash
-# Aktuellen Benutzer anzeigen
 whoami
-```
-
-```bash
-# Detaillierte UID/GID-Informationen anzeigen
-id
-```
-
-```bash
-# Alle Gruppen des aktuellen Benutzers auflisten
-groups
-```
-
-```bash
-# Ersten 10 Einträge der Passwortdatei anzeigen
 head /etc/passwd
-```
-
-```bash
-# Ersten 10 Gruppeneinträge anzeigen
 head /etc/group
 ```
 
-## Aufgabe
+> Die Theorie unten erklärt, was du siehst.
 
-Führe den folgenden Befehl aus, um deine Benutzer- und Gruppeninformationen zu speichern:
+---
 
-```bash
-id > /tmp/step1_verification.txt && groups >> /tmp/step1_verification.txt
+## Was ist ein User?
+
+Ein **Benutzer/User** unter Linux kann Programme ausführen und Dateien besitzen. Jeder Benutzer hat:
+
+- **Username**: einen eindeutigen Namen (z.B. `john`, `sarah`)
+- **UID**: eine eindeutige User Identification Number (z.B. 1000, 1001)
+- **Primäre Gruppe**: Hauptgruppe des Users – neu erstellte Dateien gehören dieser Gruppe
+- **Home-Verzeichnis**: Startverzeichnis nach dem Login (z.B. `/home/john`)
+- **Login Shell**: z.B. `/bin/bash`
+
+## Was ist eine Gruppe?
+
+Eine **Gruppe** ist eine Sammlung von Benutzern mit gemeinsamen Berechtigungen. Jede Gruppe hat:
+
+- **Gruppenname**: z.B. `developers`, `accounting`
+- **GID (Group ID)**: eindeutige numerische Kennung
+- **Mitglieder**: alle User, die der Gruppe angehören
+
+## Primäre und Sekundäre Gruppen
+
+### Primäre Gruppe
+- Jeder Benutzer ist genau **einer** primären Gruppe zugeordnet (4. Spalte in `/etc/passwd`)
+- Neue Dateien gehören automatisch dieser Gruppe
+- Nach dem Login ist immer die primäre Gruppe aktiv
+
+### Sekundäre Gruppen
+- Ein User kann beliebig vielen sekundären Gruppen angehören (letzte Spalte in `/etc/group`)
+- Ermöglicht gemeinsamen Zugriff auf Gruppenressourcen
+- Hinzufügen mit `usermod -a -G gruppenname username`
+- Aktive Gruppe wechseln mit `newgrp gruppenname`
+
+## Was du gerade gesehen hast
+
+| Befehl | Was er zeigt |
+|--------|-------------|
+| `whoami` | Den aktuellen Benutzernamen |
+| `id` | UID, primäre GID und alle Gruppen-IDs |
+| `groups` | Alle Gruppen des aktuellen Benutzers (nur Namen) |
+| `head /etc/passwd` | Die ersten 10 Zeilen der Benutzerdatenbank |
+| `head /etc/group` | Die ersten 10 Zeilen der Gruppendatenbank |
+
+**Beispielausgabe von `id`:**
 ```
-
-Überprüfe das Ergebnis:
-
-```bash
-cat /tmp/step1_verification.txt
+uid=1000(joe) gid=1000(joe) groups=1000(joe),27(sudo),1001(bank)
 ```
+- `uid=1000(joe)` – Benutzer-ID
+- `gid=1000(joe)` – primäre Gruppe
+- `groups=...` – alle Gruppen (primäre + sekundäre)
+
+## Warum Gruppen wichtig sind
+
+Gruppen ermöglichen:
+- **Gemeinsamen Dateizugriff**: mehrere User können auf dieselben Ressourcen zugreifen
+- **Projektorganisation**: Dateien nach Projektteams gruppieren
+- **Rechtemanagement**: Berechtigungen an Gruppen statt Einzelpersonen vergeben
+
+Typischer Ablauf für ein neues Projekt:
+1. Neue Gruppe einrichten
+2. Gemeinsames Verzeichnis anlegen
+3. Betreffende Benutzer der Gruppe zuordnen
 
 ## Key Takeaways
 
 ✓ Benutzer haben eindeutige Benutzernamen und UIDs  
-✓ Jeder Benutzer gehört mindestens einer primären Gruppe an  
-✓ Benutzer können Mitglieder mehrerer sekundärer Gruppen sein  
-✓ Gruppen ermöglichen Rechteverwaltung und gemeinsamen Zugriff auf Dateien
+✓ Jeder Benutzer gehört genau einer primären Gruppe an  
+✓ Sekundäre Gruppen erlauben zusätzliche Zugriffsrechte  
+✓ `id` zeigt UID + alle GIDs; `groups` zeigt nur die Gruppennamen
 
 Weiter zu den Konfigurationsdateien! Klicke auf **Next**.
