@@ -1,5 +1,30 @@
 # Step 2: System- und Konfigurationsdateien für User und Gruppen
 
+## Aufgabe
+
+Erkunde die vier zentralen Konfigurationsdateien für User und Gruppen. 
+Du musst mindestens die 4 files die hier besprochen werden auflisten und die ersten 15 zeilen der Datei in der Information zu Passwörtern gespeichert werden anzeigen.
+
+
+
+Weitere empfohlene Befehle zum Erkunden:
+
+```bash
+head -15 /etc/group
+```
+
+```bash
+grep "^root:" /etc/passwd
+```
+
+```bash
+ls -la /etc/skel/
+```
+
+> Die Theorie unten erklärt, was du siehst.
+
+---
+
 ## Die vier zentralen Dateien
 
 Linux verwaltet Benutzer- und Gruppeninformationen in vier Konfigurationsdateien:
@@ -28,16 +53,17 @@ daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
 john:x:1000:1000:John Doe:/home/john:/bin/bash
 ```
 
-**Feldbeschreibung:**
-1. **username** – Login-Name
-2. **x** – Passwort-Hash (wird jetzt in `/etc/shadow` gespeichert)
-3. **UID** – User ID (0 = root)
-4. **GID** – Primary Group ID
-5. **comment** – Vollständiger Name/Beschreibung
-6. **home-directory** – Pfad zum Home-Verzeichnis
-7. **login-shell** – Shell beim Login
+| Feld | Inhalt |
+|------|--------|
+| username | Login-Name |
+| x | Passwort (steht jetzt in `/etc/shadow`) |
+| UID | User ID (0 = root) |
+| GID | Primary Group ID |
+| comment | Vollständiger Name / Beschreibung |
+| home-directory | Pfad zum Home-Verzeichnis |
+| login-shell | Shell beim Login |
 
-**Berechtigungen:** Alle Benutzer dürfen `/etc/passwd` **lesen**, aber nur root darf die Datei **verändern**.
+**Berechtigung:** Alle dürfen lesen, nur root darf schreiben.
 
 ---
 
@@ -46,18 +72,19 @@ john:x:1000:1000:John Doe:/home/john:/bin/bash
 Enthält verschlüsselte Passwörter (Hash-Codes) und Passwort-Aging-Informationen.
 **Nur root kann diese Datei lesen und verändern!**
 
-Jede Zeile hat 9 Felder:
+Jede Zeile hat **9 Felder**:
 ```
 username:pwd-hash:changed:minlife:maxlife:warn:inactive:expires:unused
 ```
 
-**Aging-Daten (Erläuterung):**
-- **changed** – Datum der letzten Passwort-Änderung (Tage seit dem 01.01.1970)
-- **minlife** – Minimale Tage bevor das Passwort geändert werden darf (0 = kein Limit)
-- **maxlife** – Maximale Tage bis das Passwort geändert werden muss (9999 ≈ unbegrenzt)
-- **warn** – Tage vor Ablauf des Passworts, an denen gewarnt wird (leer = keine Warnung)
-- **inactive** – Tage nach Passwortablauf bis der Account deaktiviert wird (leer = kein Limit)
-- **expires** – Datum, an dem der Account auf jeden Fall deaktiviert wird (leer = kein Limit)
+| Feld | Bedeutung |
+|------|-----------|
+| changed | Datum der letzten Passwortänderung (Tage seit 01.01.1970) |
+| minlife | Minimale Tage bevor Passwort geändert werden darf |
+| maxlife | Maximale Tage bis Passwort geändert werden muss |
+| warn | Tage vor Ablauf, an denen gewarnt wird |
+| inactive | Tage nach Ablauf bis Account deaktiviert wird |
+| expires | Datum, an dem Account deaktiviert wird |
 
 ---
 
@@ -148,19 +175,7 @@ grep "^$(whoami):" /etc/passwd
 grep "$(whoami)" /etc/group
 ```
 
-## Aufgabe
 
-Speichere die Dateiberechtigungen der Konfigurationsdateien zur Überprüfung:
-
-```bash
-ls -l /etc/passwd /etc/shadow /etc/group /etc/gshadow > /tmp/step2_verification.txt
-```
-
-Überprüfe das Ergebnis:
-
-```bash
-cat /tmp/step2_verification.txt
-```
 
 ## Key Takeaways
 
@@ -168,6 +183,6 @@ cat /tmp/step2_verification.txt
 ✓ `/etc/shadow` – Verschlüsselte Passwörter (nur root!)  
 ✓ `/etc/group` – Gruppendefinitionen und Mitglieder  
 ✓ `/etc/gshadow` – Gruppenpasswörter (selten verwendet)  
-✓ Diese Dateien müssen sorgfältig geschützt werden – Schreibrechte nur für root!
+✓ Schreibrechte auf diese Dateien nur für root – sicherheitskritisch!
 
 Bereit, deinen ersten User zu erstellen? Weiter zum nächsten Schritt!
