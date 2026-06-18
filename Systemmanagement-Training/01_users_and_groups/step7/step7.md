@@ -1,238 +1,181 @@
-# Step 7: sudo and Administrative Access
+# Step 7: Übung 3 – sudo und administrativer Zugriff
 
-## The Problem with Shared root Password
+## Das Problem mit dem gemeinsamen root-Passwort
 
-- Multiple admins sharing the root password is **insecure**
-- No audit trail of who did what
-- Lost password → emergency recovery
-- Compromised password → complete system breach
+Zur Administration eines wichtigen Servers sind oft mehrere Admins notwendig.
+Wenn alle das root-Passwort kennen, ist das **unsicher und inflexibel**:
+- Kein Audit-Trail (wer hat was gemacht?)
+- Ein verlorenes Passwort → Notfallwiederherstellung nötig
+- Ein kompromittiertes Passwort → vollständiger Systemzugriff
 
-## The Solution: sudo
+## Die Lösung: sudo
 
-The **sudo** command allows regular users to execute commands as root (or other users) **without sharing the root password**.
+Mit **sudo** (substitute user do) können bestimmte Benutzer administrative Kommandos ausführen – **ohne das root-Passwort zu kennen**.
 
-### How sudo Works
-
-```bash
-# Regular user runs command with sudo
-user@host$ sudo command
-
-# System checks /etc/sudoers for permissions
-# If allowed, command runs as root
-# Authenticates with user's password, not root password
-```
-
-### Basic Usage
+### Grundlegende Verwendung
 
 ```bash
-# Run single command as root
-sudo command
+# Einzelnes Kommando als root ausführen
+sudo kommando
 
-# Run command as different user
-sudo -u username command
+# Als anderer Benutzer ausführen
+sudo -u benutzername kommando
 
-# Open root shell (everything after runs as root)
+# Root-Shell öffnen
 sudo -s
-# Type 'exit' to return to normal user
+# Zurück zum normalen User: exit oder Strg+D
 
-# Run shell as specific user
-sudo -i -u username
+# Root-Shell mit Login-Umgebung
+sudo bash
 ```
 
-## The /etc/sudoers File
-
-This file controls who can use sudo and what commands they can run.
-
-### Important Rules
-
-⚠️ **ALWAYS edit with `visudo`**, not a regular text editor!
-- Validates syntax
-- Prevents file corruption
-- Prevents being locked out
+### su – Benutzer wechseln
 
 ```bash
-# Edit sudoers file safely
+# Zu anderem Benutzer wechseln
+su - benutzername
+
+# Zu root wechseln (Passwort von root wird benötigt)
+su - root
+
+# Zurück zum vorherigen Benutzer
+exit
+```
+
+## Die /etc/sudoers-Datei
+
+Diese Datei steuert, wer sudo verwenden darf und welche Kommandos erlaubt sind.
+
+> **WICHTIG:** Die Datei IMMER mit `visudo` bearbeiten – nie direkt mit einem Texteditor!  
+> `visudo` prüft die Syntax und verhindert, dass man sich aussperrt.
+
+```bash
 sudo visudo
 ```
 
-### Sudoers Syntax
-
-General format:
-```
-user  host = (runas_user) command
-```
-
-**Examples:**
+### Syntax der sudoers-Datei
 
 ```
-# Allow joe to run any command as root
+user  host = (als_user) kommando
+```
+
+**Beispiele:**
+```
+# joe darf alle Kommandos als root ausführen
 joe ALL=(ALL) ALL
 
-# Allow admin group to run any command
-%admin ALL=(ALL) ALL
+# Alle Mitglieder der Gruppe bank dürfen sudo verwenden
+%bank ALL=(ALL) ALL
 
-# Allow users to restart apache without password
-developers ALL=(ALL) NOPASSWD: /etc/init.d/apache2 restart
+# developers dürfen apache ohne Passwort neustarten
+%developers ALL=(ALL) NOPASSWD: /usr/sbin/systemctl restart apache2
 
-# Allow specific commands only
+# operator darf nur reboot und shutdown
 operator ALL=(ALL) /sbin/reboot, /sbin/shutdown
 ```
 
-## Field Breakdown
+**Felder:**
+- **User/Gruppe**: `benutzername` oder `%gruppenname`
+- **Host**: `ALL` (auf jedem Host) oder Hostname
+- **Als User**: `(ALL)` (als jeder) oder `(root)` oder `(user1,user2)`
+- **Kommandos**: `ALL` (alles) oder vollständiger Pfad zu bestimmten Kommandos
 
-- **User/Group**: `username` or `%groupname`
-- **Host**: `ALL` (works on any host) or specific hostname
-- **Run As**: `(ALL)` (as anyone) or `(root)` or `(user1,user2)`
-- **Commands**: `ALL` (any command) or specific commands with full path
+### Empfohlene Methode: /etc/sudoers.d/
 
-## Practical Examples
-
-### Allow User Administrative Privileges
+Statt die Hauptdatei zu bearbeiten, eigene Dateien in `/etc/sudoers.d/` anlegen:
 
 ```bash
-# Add joe to sudoers for full administrative access
-echo "joe ALL=(ALL) ALL" | sudo tee -a /etc/sudoers.d/joe
+# Regel für joe anlegen
+echo "joe ALL=(ALL) ALL" | sudo tee /etc/sudoers.d/joe
 
-# Verify
-sudo cat /etc/sudoers.d/joe
+# Regel für bank-Gruppe anlegen
+echo "%bank ALL=(ALL) ALL" | sudo tee /etc/sudoers.d/bank_admins
 
-# Test: joe can now run sudo commands
-sudo -u joe sudo whoami  # Should output: root
+# Syntax prüfen
+sudo visudo -c
 ```
 
-### Allow Group to Run Specific Commands
+## Ubuntu/macOS vs. RHEL
+
+| System | Verhalten |
+|--------|-----------|
+| macOS, Ubuntu | sudo vorkonfiguriert; root hat kein Passwort |
+| RHEL, CentOS | Benutzer der `wheel`-Gruppe dürfen sudo verwenden |
+
+## Sudo-Berechtigungen prüfen
 
 ```bash
-# Create admin rule for bank group
-sudo bash -c 'echo "%bank ALL=(ALL) ALL" > /etc/sudoers.d/bank_admins'
-
-# Verify
-sudo cat /etc/sudoers.d/bank_admins
-
-# This allows all bank group members to use sudo
-```
-
-### Allow Commands Without Password
-
-```bash
-# Allow members of admin group to use sudo without password
-echo "%admin ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/admin_nopass
-
-# WARNING: This is less secure but useful for scripts
-```
-
-### Allow Specific Commands Only
-
-```bash
-# Let developers restart web server without full sudo access
-sudo bash -c 'echo "developers ALL=(ALL) NOPASSWD: /usr/sbin/systemctl restart apache2" > /etc/sudoers.d/developers_apache'
-
-# Users in 'developers' group can only restart apache, not get root shell
-sudo -u alice sudo systemctl restart apache2  # Works if alice is in developers group
-sudo -u alice sudo whoami  # Won't work - command not allowed
-```
-
-## Practical Setup for Our Project
-
-Let's set up sudo for our Dalton project teams:
-
-```bash
-# Make bank group members administrators
-sudo bash -c 'echo "%bank ALL=(ALL) ALL" > /etc/sudoers.d/bank_admins'
-
-# Make train group members able to manage services
-sudo bash -c 'echo "%train ALL=(ALL) NOPASSWD: /usr/sbin/systemctl" > /etc/sudoers.d/train_services'
-
-# Verify rules
-echo "=== Bank Admins ===" && sudo cat /etc/sudoers.d/bank_admins
-echo "=== Train Services ===" && sudo cat /etc/sudoers.d/train_services
-```
-
-## Checking Sudo Permissions
-
-```bash
-# List what sudo can do
+# Eigene sudo-Berechtigungen anzeigen
 sudo -l
 
-# List what specific user can do
+# Berechtigungen eines anderen Users anzeigen
+sudo -l -U joe
+```
+
+## Sudo-Protokoll
+
+Sudo-Aktionen werden für Security-Audits protokolliert:
+
+```bash
+# Sudo-Log anzeigen
+sudo grep sudo /var/log/auth.log | tail -10
+```
+
+## Aufgabe (Übung 3)
+
+Richte administrative Rechte für die Projektteams aus Schritt 6 ein:
+
+**Teil A: joe erhält administrative Rechte**
+
+```bash
+# Sudoers-Regel für joe anlegen
+echo "joe ALL=(ALL) ALL" | sudo tee /etc/sudoers.d/joe
+
+# Inhalt prüfen
+sudo cat /etc/sudoers.d/joe
+```
+
+**Teil B: Alle Mitglieder der bank-Gruppe werden Administratoren**
+
+```bash
+# Sudoers-Regel für die bank-Gruppe anlegen
+echo "%bank ALL=(ALL) ALL" | sudo tee /etc/sudoers.d/bank_admins
+
+# Inhalt prüfen
+sudo cat /etc/sudoers.d/bank_admins
+```
+
+**Teil C: Syntax prüfen**
+
+```bash
+sudo visudo -c
+```
+
+**Teil D: Überprüfen**
+
+```bash
+# Joes Berechtigungen anzeigen
 sudo -l -U joe
 
-# Check if user can run specific command without password
-sudo -l -U joe -p /usr/sbin/systemctl
-```
-
-## Sudo Log
-
-Sudo actions are logged for security auditing:
-
-```bash
-# View sudo log
-sudo grep sudo /var/log/auth.log | tail -10
-
-# Or check sudo specific log (if configured)
-sudo tail /var/log/sudo.log 2>/dev/null
-```
-
-## Security Best Practices
-
-✓ **Always use visudo** - Never edit `/etc/sudoers` directly
-
-✓ **Use groups** - Easier to manage than individual users
-
-✓ **Principle of least privilege** - Only grant needed permissions
-
-✓ **Specific commands** - Better than `ALL` when possible
-
-✓ **No passwords** - Only for trusted automation
-
-✓ **Monitor logs** - Regularly check sudo usage
-
-✓ **Keep sudoers simple** - Easy rules are easier to audit
-
-## Practice: Set Up Sudoers
-
-Complete this exercise:
-
-```bash
-# 1. Create or verify you have the admin group
-sudo groupadd admin 2>/dev/null
-
-# 2. Add user to admin group
-sudo useradd testadmin 2>/dev/null
-sudo usermod -a -G admin testadmin
-
-# 3. Configure sudo for admin group
-sudo bash -c 'echo "%admin ALL=(ALL) ALL" > /etc/sudoers.d/admin'
-
-# 4. Verify it works
-echo "Admin group sudoers rule:"
-sudo cat /etc/sudoers.d/admin
-
-# 5. Check syntax
-sudo visudo -c  # Returns "parse error" message if errors
-```
-
-## Comparison: User vs Root
-
-```bash
-# Without sudo - access denied
-ssh testadmin "cat /etc/shadow"  # Permission denied
-
-# With sudo - works
-ssh testadmin "sudo cat /etc/shadow"  # Succeeds if sudoer
-```
-
-## Cleaning Up Sudoers Files
-
-```bash
-# List all sudoers rules
+# Alle sudoers.d-Regeln auflisten
 sudo ls -la /etc/sudoers.d/
-
-# Remove specific rule
-sudo rm /etc/sudoers.d/bank_admins
-
-# Check remaining rules
-sudo cat /etc/sudoers.d/*
 ```
 
-Excellent! You've completed the Linux Users and Groups scenario! Let's wrap up and review what you've learned.
+## Best Practices
+
+✓ **Immer `visudo` verwenden** – nie `/etc/sudoers` direkt bearbeiten  
+✓ **Gruppen statt Einzeluser** – einfacher zu verwalten  
+✓ **Prinzip der geringsten Rechte** – nur notwendige Kommandos erlauben  
+✓ **Spezifische Kommandos** – besser als `ALL` wenn möglich  
+✓ **Logs überwachen** – regelmäßig sudo-Nutzung prüfen  
+✓ **Sudoers einfach halten** – einfache Regeln sind leichter zu prüfen
+
+## Key Takeaways
+
+✓ `sudo` erlaubt Benutzern administrative Kommandos ohne root-Passwort  
+✓ `/etc/sudoers.d/` ist der empfohlene Ort für eigene Regeln  
+✓ `%gruppenname` gewährt allen Mitgliedern einer Gruppe sudo-Rechte  
+✓ `visudo -c` prüft die Syntax der sudoers-Konfiguration  
+✓ `sudo -l -U username` zeigt die Berechtigungen eines bestimmten Users
+
+Herzlichen Glückwunsch! Du hast alle Übungen abgeschlossen. Klicke auf **Next** für die Zusammenfassung!

@@ -1,23 +1,41 @@
 {
-  "title": "Stage-01 | Dateien, Verzeichnisse und Prozesse",
+  "title": "Stage-02 | Dateien, Verzeichnisse und Prozesse",
   "description": "Lerne wie man Dateien, Verzeichnisse und Prozesse in Linux erstellen, konfigurieren und verwalten kann.",
   "difficulty": "Beginner",
-  "time": "60 minuten",
+  "time": "90 minuten",
   "details": {
     "intro": {
       "text": "intro.md"
     },
     "steps": [
       {
-        "title": "Grundlagen zu Dateien und Verzeichnissen",
+        "title": "Zugriffsrechte: rwx, chown, chmod",
         "text": "step1/step1.md",
         "verify": "step1/verify.sh",
         "foreground": "foreground/setup.sh"
       },
       {
-        "title": "Prozesse verwalten",
+        "title": "umask und Default-Zugriffsrechte",
         "text": "step2/step2.md",
         "verify": "step2/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Spezial-Bits: setuid, setgid, sticky",
+        "text": "step3/step3.md",
+        "verify": "step3/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Inodes, Links und Device-Dateien",
+        "text": "step4/step4.md",
+        "verify": "step4/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Prozesse, Signale und Dämonen",
+        "text": "step5/step5.md",
+        "verify": "step5/verify.sh",
         "foreground": "foreground/setup.sh"
       }
     ],

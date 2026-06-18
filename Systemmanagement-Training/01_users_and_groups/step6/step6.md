@@ -1,61 +1,52 @@
-# Step 6: Exercise - Create Project Users
+# Step 6: Übung 2 – Projektteams einrichten
 
-## Scenario
+## Szenario
 
-You're the system administrator for a software company with two projects:
+Du bist der Systemadministrator eines Unternehmens mit zwei laufenden Projekten.
 
-### Project: Bank Heist
-Team members: Joe Dalton, Jack Dalton, William Dalton
-Project directory: `/projects/bank`
+### Projekt `bank`
+- Benutzer: **joe** (Joe Dalton), **jack** (Jack Dalton), **william** (William Dalton)
+- Projektverzeichnis: `/projects/bank`
 
-### Project: Train Robbery
-Team members: Joe Dalton, Averall Dalton
-Project directory: `/projects/train`
+### Projekt `train`
+- Benutzer: **joe** (Joe Dalton), **averall** (Averall Dalton)
+- Projektverzeichnis: `/projects/train`
 
-**Requirements:**
-- Each user has their own home directory
-- Users have access to their project directories
-- Password must be changed every 30 days
-- Accounts must expire after 90 days
+**Anforderungen:**
+- Jeder Benutzer hat sein eigenes Home-Verzeichnis
+- Benutzer haben Zugriff auf die jeweiligen Projektverzeichnisse
+- Alle Accounts sollen nach **90 Tagen** deaktiviert werden
+- Das Passwort muss innerhalb dieser Zeit alle **30 Tage** geändert werden
 
-## Let's Build It!
-
-### Step 1: Create Groups
+## Schritt 1: Projektgruppen erstellen
 
 ```bash
-# Create project groups
 sudo groupadd bank
 sudo groupadd train
 
-echo "Groups created:"
+# Überprüfen
 grep -E "^(bank|train):" /etc/group
 ```
 
-### Step 2: Create Users
+## Schritt 2: Benutzer anlegen
 
 ```bash
-# Bank project users
-sudo useradd -c "Joe Dalton" joe
-sudo useradd -c "Jack Dalton" jack
-sudo useradd -c "William Dalton" william
+# Bank-Projekt
+sudo useradd -c "Joe Dalton"     -s /bin/bash -m joe
+sudo useradd -c "Jack Dalton"    -s /bin/bash -m jack
+sudo useradd -c "William Dalton" -s /bin/bash -m william
 
-# Train project users (averall is additional to joe)
-sudo useradd -c "Averall Dalton" averall
+# Train-Projekt (averall; joe wurde bereits angelegt)
+sudo useradd -c "Averall Dalton" -s /bin/bash -m averall
 
-# Verify users created
-echo "Users created:"
+# Überprüfen
 grep -E "^(joe|jack|william|averall):" /etc/passwd | cut -d: -f1
 ```
 
-### Step 3: Set Passwords
+## Schritt 3: Passwörter setzen
 
 ```bash
-# Generate secure passwords
-echo "Setting passwords..."
-echo "temppass123" | sudo passwd --stdin joe
-echo "temppass123" | sudo passwd --stdin jack
-echo "temppass123" | sudo passwd --stdin william
-echo "temppass123" | sudo passwd --stdin averall
+
 
 # Force password change on first login
 sudo chage -d 0 joe
@@ -65,140 +56,133 @@ sudo chage -d 0 averall
 
 echo "Passwords set - users must change on first login"
 ```
+# Sichere Passwörter setzen (interaktiv)
+```bash
+sudo passwd joe
+sudo passwd jack
+sudo passwd william
+sudo passwd averall
+```
 
 ### Step 4: Configure Password Policies
 
 ```bash
-# Max password age: 30 days, warn 7 days before, inactive after 7 days
-# Account expires: 90 days from now
-
 EXPIRY=$(date -d "+90 days" +%Y-%m-%d)
 
 for user in joe jack william averall; do
-  # Password policy
-  sudo chage -M 30 -W 7 -i 7 "$user"
-  # Account expiration
+  # Sofortigen Passwortwechsel beim ersten Login erzwingen
+  sudo chage -d 0 "$user"
+  # Passwort-Ablauf: alle 30 Tage, Warnung 7 Tage vorher
+  sudo chage -M 30 -W 7 "$user"
+  # Account-Ablauf: 90 Tage ab heute
   sudo chage -E "$EXPIRY" "$user"
 done
 
-# Show policies
-echo "=== Joe's policy ==="
+# Beispiel-Überprüfung
+echo "=== Richtlinien für joe ==="
 sudo chage -l joe
-
-echo ""
-echo "=== Averall's policy ==="
-sudo chage -l averall
 ```
 
-### Step 5: Assign to Groups
+## Schritt 5: Benutzer den Gruppen zuordnen
 
 ```bash
-# Joe belongs to both projects
+# joe ist in beiden Projekten
 sudo usermod -a -G bank joe
 sudo usermod -a -G train joe
 
-# Jack and William in bank only
+# jack und william nur im Bank-Projekt
 sudo usermod -a -G bank jack
 sudo usermod -a -G bank william
 
-# Averall in train only
+# averall nur im Train-Projekt
 sudo usermod -a -G train averall
 
-# Verify group assignments
-echo "=== Group Assignments ==="
-echo "Bank group members:" && grep "^bank:" /etc/group
-echo "Train group members:" && grep "^train:" /etc/group
+# Überprüfen
+echo "=== Gruppenverteilung ===" 
+echo "bank:" && grep "^bank:" /etc/group
+echo "train:" && grep "^train:" /etc/group
 ```
 
-### Step 6: Create and Configure Project Directories
+## Schritt 6: Projektverzeichnisse einrichten
 
 ```bash
-# Create project directories
+# Verzeichnisse erstellen
 sudo mkdir -p /projects/bank
 sudo mkdir -p /projects/train
 
-# Set group ownership
+# Gruppenbesitz setzen
 sudo chown :bank /projects/bank
 sudo chown :train /projects/train
 
-# Set permissions: owner full, group read/write/execute, others nothing
+# Berechtigungen: Besitzer voll, Gruppe lesen/schreiben/ausführen, andere nichts
 sudo chmod 770 /projects/bank
 sudo chmod 770 /projects/train
 
-# Verify
-echo "=== Project Directories ==="
-ls -ld /projects/{bank,train}
+# Überprüfen
+ls -ld /projects/bank /projects/train
 ```
 
-### Step 7: Verify Everything
+## Schritt 7: Gesamtüberprüfung
 
 ```bash
-# Check all users exist with home directories
-echo "=== Users and Homes ==="
+echo "=== Benutzer und Home-Verzeichnisse ==="
 for user in joe jack william averall; do
   echo -n "$user: "
-  grep "^$user:" /etc/passwd | cut -d: -f1,3,6
+  getent passwd "$user" | cut -d: -f1,3,6
 done
 
 echo ""
-echo "=== Group Memberships ==="
+echo "=== Gruppen der Benutzer ==="
 for user in joe jack william averall; do
   echo "$user: $(groups $user | cut -d: -f2)"
 done
 
 echo ""
-echo "=== Password Policies (Joe and Averall) ==="
-echo "Joe:" && sudo chage -l joe | grep -E "Password expires|Account expires"
-echo "Averall:" && sudo chage -l averall | grep -E "Password expires|Account expires"
+echo "=== Passwort-Richtlinien ==="
+for user in joe averall; do
+  echo "--- $user ---"
+  sudo chage -l "$user" | grep -E "Password expires|Account expires|Maximum"
+done
 
 echo ""
-echo "=== Project Directory Permissions ==="
-ls -ld /projects/{bank,train}
+echo "=== Projektverzeichnisse ==="
+ls -ld /projects/bank /projects/train
 ```
 
-## Test User Access
-
-Let's verify users can access their project directories:
+## Zugriff testen
 
 ```bash
-# Create test files as each user
-sudo -u joe touch /projects/bank/joe_file.txt
-sudo -u jack touch /projects/bank/jack_file.txt
-sudo -u joe touch /projects/train/joe_train.txt
+# Testdateien als jeweilige Benutzer erstellen
+sudo -u joe   touch /projects/bank/joe_bank.txt
+sudo -u jack  touch /projects/bank/jack_bank.txt
+sudo -u joe   touch /projects/train/joe_train.txt
 sudo -u averall touch /projects/train/averall_train.txt
 
-echo "=== Files Created ==="
-ls -l /projects/bank/
-echo ""
-ls -l /projects/train/
+echo "=== Bank-Verzeichnis ===" && ls -l /projects/bank/
+echo "=== Train-Verzeichnis ===" && ls -l /projects/train/
 ```
 
-## Troubleshooting
+## Fehlerkorrektur
 
-If you made mistakes, here's how to fix them:
+Falls etwas schiefgelaufen ist:
 
 ```bash
-# Remove a user from a group
-sudo usermod -G "" joe  # Removes all secondary groups (careful!)
+# Benutzer aus Gruppe entfernen
+sudo gpasswd -d joe bank
 
-# Or better: remove specific group
-sudo gpasswd -d joe bank  # Remove joe from bank group
+# Benutzer löschen (inkl. Home-Verzeichnis)
+sudo userdel -r benutzername
 
-# Delete a user (optional cleanup)
-sudo userdel -r username  # -r also removes home directory
-
-# Delete a group
-sudo groupdel groupname
+# Gruppe löschen
+sudo groupdel gruppenname
 ```
 
-## Summary
+## Key Takeaways
 
-You've successfully:
-✓ Created two project groups (bank, train)  
-✓ Created four users with home directories  
-✓ Set password policies (30-day expiration, warnings)  
-✓ Set account expiration (90 days)  
-✓ Organized users into project groups  
-✓ Created shared project directories with proper permissions  
+✓ Gruppen und Benutzer werden logisch nach Projekten organisiert  
+✓ `chage -E` setzt ein Account-Ablaufdatum  
+✓ `chage -M 30` erzwingt Passwortwechsel alle 30 Tage  
+✓ Projektverzeichnisse mit `chown :gruppe` und `chmod 770` absichern  
+✓ `joe` ist Mitglied beider Projektgruppen (bank und train)
 
-Ready to learn about administrative access? Continue to the next step!
+Bereit für den letzten Schritt – administrative Zugriffsrechte! Weiter zum nächsten Schritt!
