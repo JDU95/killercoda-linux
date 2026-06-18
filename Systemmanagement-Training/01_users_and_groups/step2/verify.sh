@@ -1,22 +1,26 @@
 #!/bin/bash
 # Step 2 Verification: Benutzer hat die 4 Konfigurationsdateien mit cat angezeigt
-# und head auf /etc/shadow ausgeführt
 
-# Alle 4 Dateien mit cat anzeigen – entweder als ein Befehl oder als 4 einzelne Befehle
+HIST=/root/.bash_history
+
+# Flush current session history to file before checking
+history -a 2>/dev/null || true
+
+# Alle 4 Dateien mit cat – entweder als ein kombinierter Befehl oder als 4 einzelne
 check_cat_combined() {
-    grep -qF "cat /etc/passwd /etc/shadow /etc/group /etc/gshadow" ~/.bash_history
+    grep -qF "cat /etc/passwd /etc/shadow /etc/group /etc/gshadow" "$HIST"
 }
 
 check_cat_separate() {
-    grep -qE "^cat /etc/passwd"  ~/.bash_history &&
-    grep -qE "^cat /etc/shadow"  ~/.bash_history &&
-    grep -qE "^cat /etc/group"   ~/.bash_history &&
-    grep -qE "^cat /etc/gshadow" ~/.bash_history
+    grep -qE "cat.*/etc/passwd"  "$HIST" &&
+    grep -qE "cat.*/etc/shadow"  "$HIST" &&
+    grep -qE "cat.*/etc/group"   "$HIST" &&
+    grep -qE "cat.*/etc/gshadow" "$HIST"
 }
 
 check_cat_combined || check_cat_separate || exit 1
 
-# head -15 /etc/shadow muss ausgeführt worden sein (Passwort-Datei)
-grep -qE "^head.*/etc/shadow" ~/.bash_history || exit 1
+# head auf /etc/shadow muss ausgeführt worden sein (Datei mit Passwort-Infos)
+grep -qE "head.*/etc/shadow" "$HIST" || exit 1
 
 exit 0
