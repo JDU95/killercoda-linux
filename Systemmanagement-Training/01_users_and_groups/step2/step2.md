@@ -3,7 +3,7 @@
 ## Aufgabe
 
 Erkunde die vier zentralen Konfigurationsdateien für User und Gruppen. 
-Du musst mindestens die 4 files die hier besprochen werden auflisten und die ersten 15 zeilen der Datei in der Information zu Passwörtern gespeichert werden anzeigen.
+Du musst mindestens die 4 files die hier besprochen werden mit cat anzeigen und die ersten 15 zeilen der Datei in der Information zu Passwörtern gespeichert werden anzeigen.
 
 
 
