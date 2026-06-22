@@ -1,0 +1,49 @@
+{
+  "title": "Stage-03 | Filesystem Administration",
+  "description": "Learn filesystem fundamentals, partitioning, creation, mounting, and repair. Understand how Linux manages storage devices, organizes data, and recovers from filesystem errors.",
+  "difficulty": "Intermediate",
+  "time": "90 minuten",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "Filesystems & /etc/fstab",
+        "text": "step1/step1.md",
+        "verify": "step1/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Block Devices & Device Naming",
+        "text": "step2/step2.md",
+        "verify": "step2/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Partitioning: MBR vs GPT",
+        "text": "step3/step3.md",
+        "verify": "step3/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Creating Filesystems",
+        "text": "step4/step4.md",
+        "verify": "step4/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Filesystem Repair & fsck",
+        "text": "step5/step5.md",
+        "verify": "step5/verify.sh",
+        "foreground": "foreground/setup.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}

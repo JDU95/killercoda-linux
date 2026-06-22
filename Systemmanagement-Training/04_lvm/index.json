@@ -1,0 +1,43 @@
+{
+  "title": "Stage-04 | Logical Volume Manager (LVM)",
+  "description": "Verstehe Logical Volume Management (LVM) — die professionelle Speicherverwaltung für Linux. Lerne PV, VG, LV zu erstellen und dynamisch zu vergrößern.",
+  "difficulty": "Advanced",
+  "time": "120 minuten",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "LVM Concepts & Physical Volumes",
+        "text": "step1/step1.md",
+        "verify": "step1/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Creating Volume Groups",
+        "text": "step2/step2.md",
+        "verify": "step2/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Logical Volumes & Mounting",
+        "text": "step3/step3.md",
+        "verify": "step3/verify.sh",
+        "foreground": "foreground/setup.sh"
+      },
+      {
+        "title": "Extending LVM",
+        "text": "step4/step4.md",
+        "verify": "step4/verify.sh",
+        "foreground": "foreground/setup.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}
